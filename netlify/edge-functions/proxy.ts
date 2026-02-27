@@ -7,6 +7,56 @@ const FETCH_TIMEOUT_MS = 30_000;
 
 const BASE62_CHARS = "0123456789ABCDEFGHIJKLMNoPqRsTuVwXyZabcdefghijklmnopqrstuvwxyz";
 
+/**
+ * Validate that a URL is safe to proxy to (not an internal/private address).
+ * Blocks RFC 1918, loopback, link-local, and non-HTTP(S) schemes.
+ */
+function isUrlSafeForProxy(urlStr: string): { safe: boolean; reason?: string } {
+  let parsed: URL;
+  try {
+    parsed = new URL(urlStr);
+  } catch {
+    return { safe: false, reason: "Invalid URL" };
+  }
+
+  // Only allow http/https schemes
+  if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+    return { safe: false, reason: `Scheme '${parsed.protocol}' not allowed` };
+  }
+
+  const hostname = parsed.hostname.toLowerCase();
+
+  // Block localhost variants
+  if (
+    hostname === "localhost" ||
+    hostname === "127.0.0.1" ||
+    hostname === "[::1]" ||
+    hostname === "::1" ||
+    hostname === "0.0.0.0"
+  ) {
+    return { safe: false, reason: "Loopback addresses not allowed" };
+  }
+
+  // Block known metadata endpoints
+  if (hostname === "169.254.169.254" || hostname === "metadata.google.internal") {
+    return { safe: false, reason: "Cloud metadata endpoints not allowed" };
+  }
+
+  // Block private/reserved IP ranges
+  const ipMatch = hostname.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
+  if (ipMatch) {
+    const [, a, b] = ipMatch.map(Number);
+    if (a === 10) return { safe: false, reason: "Private IP range (10.x.x.x) not allowed" };
+    if (a === 172 && b >= 16 && b <= 31) return { safe: false, reason: "Private IP range (172.16-31.x.x) not allowed" };
+    if (a === 192 && b === 168) return { safe: false, reason: "Private IP range (192.168.x.x) not allowed" };
+    if (a === 169 && b === 254) return { safe: false, reason: "Link-local range (169.254.x.x) not allowed" };
+    if (a === 127) return { safe: false, reason: "Loopback range (127.x.x.x) not allowed" };
+    if (a === 0) return { safe: false, reason: "Reserved range (0.x.x.x) not allowed" };
+  }
+
+  return { safe: true };
+}
+
 function proxyError(
   status: number,
   error: string,
@@ -342,6 +392,24 @@ export default async function handler(req: Request, context: Context) {
       }),
     );
     return proxyError(502, "upstream_error", "Failed to retrieve API credential");
+  }
+
+  // Validate base_url is not a private/internal address (SSRF protection)
+  const urlCheck = isUrlSafeForProxy(api.base_url);
+  if (!urlCheck.safe) {
+    context.waitUntil(
+      logRequest(supabase, {
+        token_id: token.id,
+        api_id: apiId,
+        user_id: token.user_id,
+        method: req.method,
+        path: "/" + upstreamPath,
+        status_code: null,
+        blocked: true,
+        block_reason: `SSRF blocked: ${urlCheck.reason}`,
+      }),
+    );
+    return proxyError(400, "invalid_base_url", "The API base URL is not allowed");
   }
 
   // Build upstream URL

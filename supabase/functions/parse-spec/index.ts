@@ -33,6 +33,45 @@ interface RequestBody {
 
 const HTTP_METHODS = ["get", "post", "put", "patch", "delete", "head", "options"];
 
+/**
+ * Validate that a base URL is safe (not a private/internal address).
+ */
+function isBaseUrlSafe(urlStr: string): { safe: boolean; reason?: string } {
+  let parsed: URL;
+  try {
+    parsed = new URL(urlStr);
+  } catch {
+    return { safe: false, reason: "Invalid URL" };
+  }
+
+  if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+    return { safe: false, reason: "Only http/https schemes are allowed" };
+  }
+
+  const hostname = parsed.hostname.toLowerCase();
+
+  if (hostname === "localhost" || hostname === "127.0.0.1" || hostname === "[::1]" || hostname === "::1" || hostname === "0.0.0.0") {
+    return { safe: false, reason: "Loopback addresses not allowed" };
+  }
+
+  if (hostname === "169.254.169.254" || hostname === "metadata.google.internal") {
+    return { safe: false, reason: "Cloud metadata endpoints not allowed" };
+  }
+
+  const ipMatch = hostname.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
+  if (ipMatch) {
+    const [, a, b] = ipMatch.map(Number);
+    if (a === 10) return { safe: false, reason: "Private IP range not allowed" };
+    if (a === 172 && b >= 16 && b <= 31) return { safe: false, reason: "Private IP range not allowed" };
+    if (a === 192 && b === 168) return { safe: false, reason: "Private IP range not allowed" };
+    if (a === 169 && b === 254) return { safe: false, reason: "Link-local range not allowed" };
+    if (a === 127) return { safe: false, reason: "Loopback range not allowed" };
+    if (a === 0) return { safe: false, reason: "Reserved range not allowed" };
+  }
+
+  return { safe: true };
+}
+
 function parseSpec(specContent: string): Record<string, unknown> {
   // Try JSON first
   try {
@@ -163,6 +202,7 @@ Deno.serve(async (req: Request) => {
     const token = authHeader?.replace("Bearer ", "");
 
     if (!token) {
+      console.error("parse-spec: No Authorization header found");
       return new Response(
         JSON.stringify({ error: "unauthorized", message: "Missing Authorization header" }),
         { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } },
@@ -172,8 +212,12 @@ Deno.serve(async (req: Request) => {
     const { data: { user }, error: userError } = await supabaseAdmin.auth.getUser(token);
 
     if (userError || !user) {
+      console.error("parse-spec: auth.getUser failed", userError?.message ?? "no user returned");
       return new Response(
-        JSON.stringify({ error: "unauthorized", message: "Invalid or expired token" }),
+        JSON.stringify({
+          error: "unauthorized",
+          message: userError?.message ?? "Invalid or expired token",
+        }),
         { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
     }
@@ -202,6 +246,20 @@ Deno.serve(async (req: Request) => {
         }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
+    }
+
+    // Validate base_url is not a private/internal address (SSRF protection)
+    if (!isReupload) {
+      const urlCheck = isBaseUrlSafe(body.base_url);
+      if (!urlCheck.safe) {
+        return new Response(
+          JSON.stringify({
+            error: "bad_request",
+            message: `Invalid base URL: ${urlCheck.reason}`,
+          }),
+          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      }
     }
 
     // Parse the OpenAPI spec

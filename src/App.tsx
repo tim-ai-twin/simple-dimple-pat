@@ -76,9 +76,18 @@ function LoginPage() {
   );
 }
 
+function PrototypeBanner() {
+  return (
+    <div className="bg-warning/90 px-4 py-2 text-center text-sm font-semibold text-white">
+      THIS IS A PROTOTYPE. DO NOT INPUT REAL API KEYS!
+    </div>
+  );
+}
+
 export default function App() {
   return (
     <ErrorBoundary>
+      <PrototypeBanner />
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
           <AuthGuard>
