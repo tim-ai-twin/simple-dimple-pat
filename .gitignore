@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Netlify
+.netlify/
+
+# Supabase local
+supabase/.temp/
+
+# Test output
+coverage/
+test-results/
+playwright-report/
+
+# Misc
+*.tmp
+*.bak
