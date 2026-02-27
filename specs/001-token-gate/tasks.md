@@ -79,19 +79,19 @@
 
 ### Tests for User Story 1
 
-- [ ] T039 [P] [US1] Unit test for OpenAPI spec parsing in `tests/unit/parse-spec.test.ts`: parse minimal Petstore, extract endpoints with method/path/params/tags; handle specs without tags; reject invalid specs
-- [ ] T040 [P] [US1] Integration test for `parse-spec` Edge Function in `tests/integration/parse-spec.test.ts`: upload spec via function invoke, verify `api_registrations` and `parsed_endpoints` rows created, credential stored in Vault
-- [ ] T041 [P] [US1] Playwright E2E test in `tests/e2e/api-registration.spec.ts`: navigate to dashboard, click "+ Add API", fill form (name, URL, spec file, auth method, credential), submit, verify API appears in sidebar with correct endpoint count
+- [x] T039 [P] [US1] Unit test for OpenAPI spec parsing in `tests/unit/parse-spec.test.ts`: parse minimal Petstore, extract endpoints with method/path/params/tags; handle specs without tags; reject invalid specs
+- [x] T040 [P] [US1] Integration test for `parse-spec` Edge Function in `tests/integration/parse-spec.test.ts`: upload spec via function invoke, verify `api_registrations` and `parsed_endpoints` rows created, credential stored in Vault
+- [x] T041 [P] [US1] Playwright E2E test in `tests/e2e/api-registration.spec.ts`: navigate to dashboard, click "+ Add API", fill form (name, URL, spec file, auth method, credential), submit, verify API appears in sidebar with correct endpoint count
 
 ### Implementation for User Story 1
 
-- [ ] T042 [US1] Implement `parse-spec` Supabase Edge Function in `supabase/functions/parse-spec/index.ts`: accept request body per management-api.md contract, validate OpenAPI spec with `@readme/openapi-parser`, extract endpoints (operation_id, method, path, params, tags), store API registration + credential in Vault + parsed endpoints in DB, return response per contract
-- [ ] T043 [US1] Create `useApis` TanStack Query hook in `src/hooks/useApis.ts`: `useApiList()` fetching `api_registrations` with parsed_endpoints count and access_tokens count, `useApiDetail(apiId)` with full parsed_endpoints, mutation for delete
-- [ ] T044 [P] [US1] Create `SpecUpload.tsx` component in `src/components/api/`: drag-and-drop zone for .yaml/.json files, client-side validation preview (using `@readme/openapi-parser`), file size display, error state for invalid specs
-- [ ] T045 [P] [US1] Create `AddApiForm.tsx` component in `src/components/api/`: inline form in detail panel with fields for name, base URL, auth method dropdown (Bearer Token / API Key Header / API Key Query), conditional auth_header_name/auth_query_param fields, credential input (obscured), SpecUpload integration, "Save API" button calling `parse-spec` Edge Function
-- [ ] T046 [US1] Create `ApiDetailView.tsx` component in `src/components/api/`: display API name, base URL, spec version badge, endpoint count, active token count, endpoint list grouped by tags, "Re-upload Spec" button, "Delete API" with confirmation dialog
-- [ ] T047 [US1] Update `Sidebar.tsx` in `src/components/layout/`: render collapsible tree from `useApiList()` data — API names as parent nodes with expand/collapse, token names as children (placeholder for US2), "+ Add API" button at bottom, status indicators (green/yellow/red) on tokens, selected state highlighting
-- [ ] T048 [US1] Wire sidebar selection to detail panel in `DashboardPage.tsx`: clicking an API in sidebar shows `ApiDetailView`, clicking "+ Add API" shows `AddApiForm`, manage selected state via URL params or local state
+- [x] T042 [US1] Implement `parse-spec` Supabase Edge Function in `supabase/functions/parse-spec/index.ts`: accept request body per management-api.md contract, validate OpenAPI spec with `@readme/openapi-parser`, extract endpoints (operation_id, method, path, params, tags), store API registration + credential in Vault + parsed endpoints in DB, return response per contract
+- [x] T043 [US1] Create `useApis` TanStack Query hook in `src/hooks/useApis.ts`: `useApiList()` fetching `api_registrations` with parsed_endpoints count and access_tokens count, `useApiDetail(apiId)` with full parsed_endpoints, mutation for delete
+- [x] T044 [P] [US1] Create `SpecUpload.tsx` component in `src/components/api/`: drag-and-drop zone for .yaml/.json files, client-side validation preview (using `@readme/openapi-parser`), file size display, error state for invalid specs
+- [x] T045 [P] [US1] Create `AddApiForm.tsx` component in `src/components/api/`: inline form in detail panel with fields for name, base URL, auth method dropdown (Bearer Token / API Key Header / API Key Query), conditional auth_header_name/auth_query_param fields, credential input (obscured), SpecUpload integration, "Save API" button calling `parse-spec` Edge Function
+- [x] T046 [US1] Create `ApiDetailView.tsx` component in `src/components/api/`: display API name, base URL, spec version badge, endpoint count, active token count, endpoint list grouped by tags, "Re-upload Spec" button, "Delete API" with confirmation dialog
+- [x] T047 [US1] Update `Sidebar.tsx` in `src/components/layout/`: render collapsible tree from `useApiList()` data — API names as parent nodes with expand/collapse, token names as children (placeholder for US2), "+ Add API" button at bottom, status indicators (green/yellow/red) on tokens, selected state highlighting
+- [x] T048 [US1] Wire sidebar selection to detail panel in `DashboardPage.tsx`: clicking an API in sidebar shows `ApiDetailView`, clicking "+ Add API" shows `AddApiForm`, manage selected state via URL params or local state
 
 ### Playwright MCP Verification for User Story 1
 

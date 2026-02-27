@@ -1,7 +1,10 @@
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import Header from "../components/layout/Header";
 import Sidebar from "../components/layout/Sidebar";
 import DetailPanel from "../components/layout/DetailPanel";
+import AddApiForm from "../components/api/AddApiForm";
+import ApiDetailView from "../components/api/ApiDetailView";
 
 type ViewState =
   | { type: "welcome" }
@@ -12,6 +15,7 @@ type ViewState =
 
 export default function DashboardPage() {
   const [view, setView] = useState<ViewState>({ type: "welcome" });
+  const queryClient = useQueryClient();
 
   const handleSelect = (type: string, id: string) => {
     if (type === "api") setView({ type: "api-detail", apiId: id });
@@ -21,9 +25,25 @@ export default function DashboardPage() {
   const renderDetail = () => {
     switch (view.type) {
       case "add-api":
-        return <p className="text-text-light">Add API form coming soon...</p>;
+        return (
+          <AddApiForm
+            onSuccess={(apiId) => {
+              queryClient.invalidateQueries({ queryKey: ["api-registrations"] });
+              setView({ type: "api-detail", apiId });
+            }}
+            onCancel={() => setView({ type: "welcome" })}
+          />
+        );
       case "api-detail":
-        return <p className="text-text-light">API detail for {view.apiId}</p>;
+        return (
+          <ApiDetailView
+            apiId={view.apiId}
+            onDeleted={() => setView({ type: "welcome" })}
+            onCreateToken={() =>
+              setView({ type: "create-token", apiId: view.apiId })
+            }
+          />
+        );
       case "token-detail":
         return (
           <p className="text-text-light">Token detail for {view.tokenId}</p>
