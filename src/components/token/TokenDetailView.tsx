@@ -9,6 +9,9 @@ import {
 import EndpointPermissions from "./EndpointPermissions";
 import ParamConstraints from "./ParamConstraints";
 import TokenShowOnce from "./TokenShowOnce";
+import { useTokenActivityLog } from "../../hooks/useActivityLog";
+import ActivityLog from "../activity/ActivityLog";
+import ShareLinkButton from "../share/ShareLinkButton";
 import type { ParsedEndpoint } from "../../../shared/types";
 
 interface TokenDetailViewProps {
@@ -21,6 +24,7 @@ export default function TokenDetailView({
   onDeleted,
 }: TokenDetailViewProps) {
   const { data: token, isLoading, error } = useTokenDetail(tokenId);
+  const { data: activityLogs, isLoading: logsLoading } = useTokenActivityLog(tokenId);
   const toggleStatus = useToggleTokenStatus();
   const updateExpiration = useUpdateExpiration();
   const regenerateToken = useRegenerateToken();
@@ -246,6 +250,39 @@ export default function TokenDetailView({
           />
         </div>
       )}
+
+      {/* Recent Calls */}
+      <div>
+        <h3 className="mb-2 font-heading text-lg font-bold text-text">
+          Recent Calls
+        </h3>
+        <ActivityLog logs={activityLogs ?? []} isLoading={logsLoading} />
+      </div>
+
+      {/* Share Link */}
+      <ShareLinkButton
+        tokenId={tokenId}
+        permissions={
+          (token.token_endpoint_permissions ?? [])
+            .filter((p) => p.parsed_endpoint)
+            .map((p) => ({
+              method: p.parsed_endpoint!.method,
+              path_template: p.parsed_endpoint!.path_template,
+              is_allowed: p.is_allowed,
+            }))
+        }
+        constraints={
+          (token.token_endpoint_permissions ?? []).flatMap((p) =>
+            (p.parameter_constraints ?? []).map((c) => ({
+              method: p.parsed_endpoint?.method ?? "",
+              path_template: p.parsed_endpoint?.path_template ?? "",
+              param_name: c.param_name,
+              allowed_patterns: c.allowed_patterns,
+            })),
+          )
+        }
+        specReference={token.api_id}
+      />
 
       {/* Delete */}
       <div className="border-t border-border-light pt-6">

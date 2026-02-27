@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { supabase } from "./lib/supabase";
 import type { Session } from "@supabase/supabase-js";
 import DashboardPage from "./pages/DashboardPage";
+import SharePage from "./pages/SharePage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -81,6 +82,7 @@ export default function App() {
         <AuthGuard>
           <Routes>
             <Route path="/" element={<DashboardPage />} />
+            <Route path="/share" element={<SharePage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </AuthGuard>

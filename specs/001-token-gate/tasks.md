@@ -173,14 +173,14 @@
 
 ### Tests for User Story 4
 
-- [ ] T076 [P] [US4] Integration test for token lifecycle in `tests/integration/token-lifecycle.test.ts`: create token, make successful proxy request, disable token → proxy returns 401, re-enable → proxy returns 200, regenerate → old token 401 + new token 200, set past expiration → proxy returns 401, delete → proxy returns 401
-- [ ] T077 [P] [US4] Playwright E2E test in `tests/e2e/token-management.spec.ts` (extend existing): toggle active/disabled via UI, change expiration date, click regenerate → verify new show-once modal, click delete → verify confirmation dialog → verify token removed from sidebar
+- [x] T076 [P] [US4] Integration test for token lifecycle in `tests/integration/token-lifecycle.test.ts`: create token, make successful proxy request, disable token → proxy returns 401, re-enable → proxy returns 200, regenerate → old token 401 + new token 200, set past expiration → proxy returns 401, delete → proxy returns 401
+- [x] T077 [P] [US4] Playwright E2E test in `tests/e2e/token-management.spec.ts` (extend existing): toggle active/disabled via UI, change expiration date, click regenerate → verify new show-once modal, click delete → verify confirmation dialog → verify token removed from sidebar
 
 ### Implementation for User Story 4
 
-- [ ] T078 [US4] Implement `regenerate-token` Supabase Edge Function in `supabase/functions/regenerate-token/index.ts`: accept `token_id`, verify ownership, generate new token value (same format: sdp_ + base62 + CRC32), compute new SHA-256 hash, update `token_hash` and `token_prefix` in `access_tokens`, return new raw_token (show-once)
-- [ ] T079 [US4] Add token lifecycle mutations to `useTokens` hook in `src/hooks/useTokens.ts`: `useToggleTokenStatus(tokenId)` updating status to active/disabled, `useUpdateExpiration(tokenId, date)`, `useRegenerateToken(tokenId)` calling `regenerate-token` Edge Function, `useDeleteToken(tokenId)` with cascade
-- [ ] T080 [US4] Wire lifecycle controls in `TokenDetailView.tsx` in `src/components/token/`: active/disabled toggle calling `useToggleTokenStatus`, inline expiration date picker calling `useUpdateExpiration`, "Regenerate" button calling `useRegenerateToken` → triggers `TokenShowOnce` modal with new value, "Expire Now" button setting expiration to now, "Delete Token" with confirmation dialog
+- [x] T078 [US4] Implement `regenerate-token` Supabase Edge Function in `supabase/functions/regenerate-token/index.ts`: accept `token_id`, verify ownership, generate new token value (same format: sdp_ + base62 + CRC32), compute new SHA-256 hash, update `token_hash` and `token_prefix` in `access_tokens`, return new raw_token (show-once)
+- [x] T079 [US4] Add token lifecycle mutations to `useTokens` hook in `src/hooks/useTokens.ts`: `useToggleTokenStatus(tokenId)` updating status to active/disabled, `useUpdateExpiration(tokenId, date)`, `useRegenerateToken(tokenId)` calling `regenerate-token` Edge Function, `useDeleteToken(tokenId)` with cascade
+- [x] T080 [US4] Wire lifecycle controls in `TokenDetailView.tsx` in `src/components/token/`: active/disabled toggle calling `useToggleTokenStatus`, inline expiration date picker calling `useUpdateExpiration`, "Regenerate" button calling `useRegenerateToken` → triggers `TokenShowOnce` modal with new value, "Expire Now" button setting expiration to now, "Delete Token" with confirmation dialog
 
 ### Playwright MCP Verification for User Story 4
 
@@ -198,14 +198,14 @@
 
 ### Tests for User Story 5
 
-- [ ] T082 [P] [US5] Playwright E2E test in `tests/e2e/activity-log.spec.ts`: make several proxy requests via APIRequestContext (some allowed, some blocked), navigate to API view → verify "Recent Activity" section shows calls, navigate to token view → verify "Recent Calls" filtered to that token, verify blocked calls show inline reason (e.g., "Blocked: DELETE not permitted")
+- [x] T082 [P] [US5] Playwright E2E test in `tests/e2e/activity-log.spec.ts`: make several proxy requests via APIRequestContext (some allowed, some blocked), navigate to API view → verify "Recent Activity" section shows calls, navigate to token view → verify "Recent Calls" filtered to that token, verify blocked calls show inline reason (e.g., "Blocked: DELETE not permitted")
 
 ### Implementation for User Story 5
 
-- [ ] T083 [US5] Create `useActivityLog` TanStack Query hook in `src/hooks/useActivityLog.ts`: `useApiActivityLog(apiId)` querying `request_logs` ordered by `created_at DESC` limit 50, `useTokenActivityLog(tokenId)` filtered by token_id, auto-refetch on interval (30 seconds)
-- [ ] T084 [US5] Create `ActivityLog.tsx` component in `src/components/activity/`: table/list showing rows with: relative time ("2m ago"), token name, HTTP method badge (colored by method), path, status code badge (green 2xx, yellow 3xx, red 4xx/5xx), check/cross indicator, expandable block_reason for blocked requests styled as inline warning
-- [ ] T085 [US5] Integrate activity log into `ApiDetailView.tsx`: add "Recent Activity" section at bottom of API detail showing `ActivityLog` filtered by api_id
-- [ ] T086 [US5] Integrate activity log into `TokenDetailView.tsx`: add "Recent Calls" section at bottom of token detail showing `ActivityLog` filtered by token_id
+- [x] T083 [US5] Create `useActivityLog` TanStack Query hook in `src/hooks/useActivityLog.ts`: `useApiActivityLog(apiId)` querying `request_logs` ordered by `created_at DESC` limit 50, `useTokenActivityLog(tokenId)` filtered by token_id, auto-refetch on interval (30 seconds)
+- [x] T084 [US5] Create `ActivityLog.tsx` component in `src/components/activity/`: table/list showing rows with: relative time ("2m ago"), token name, HTTP method badge (colored by method), path, status code badge (green 2xx, yellow 3xx, red 4xx/5xx), check/cross indicator, expandable block_reason for blocked requests styled as inline warning
+- [x] T085 [US5] Integrate activity log into `ApiDetailView.tsx`: add "Recent Activity" section at bottom of API detail showing `ActivityLog` filtered by api_id
+- [x] T086 [US5] Integrate activity log into `TokenDetailView.tsx`: add "Recent Calls" section at bottom of token detail showing `ActivityLog` filtered by token_id
 
 ### Playwright MCP Verification for User Story 5
 
@@ -223,16 +223,16 @@
 
 ### Tests for User Story 6
 
-- [ ] T088 [P] [US6] Unit test for share link encoding/decoding in `tests/unit/share-link.test.ts`: encode endpoint permissions + param constraints to URL-safe base64url string, decode back to original structure, verify no credential data is included, test with large permission sets (50+ endpoints), verify URL length stays reasonable
-- [ ] T089 [P] [US6] Playwright E2E test in `tests/e2e/share-link.spec.ts`: navigate to token detail, click "Share Link", verify URL generated and copied, open share URL in new context, verify pre-filled endpoint permissions match original, verify credential fields are empty, fill in own credential + name + base URL, create token, verify new token created with same permissions
+- [x] T088 [P] [US6] Unit test for share link encoding/decoding in `tests/unit/share-link.test.ts`: encode endpoint permissions + param constraints to URL-safe base64url string, decode back to original structure, verify no credential data is included, test with large permission sets (50+ endpoints), verify URL length stays reasonable
+- [x] T089 [P] [US6] Playwright E2E test in `tests/e2e/share-link.spec.ts`: navigate to token detail, click "Share Link", verify URL generated and copied, open share URL in new context, verify pre-filled endpoint permissions match original, verify credential fields are empty, fill in own credential + name + base URL, create token, verify new token created with same permissions
 
 ### Implementation for User Story 6
 
-- [ ] T090 [US6] Implement share link encoding/decoding in `src/lib/share-link.ts`: `encodeShareLink(permissions, constraints, specReference)` → base64url-encoded JSON payload in URL fragment, `decodeShareLink(url)` → parsed permissions and constraints object, compress payload to keep URLs reasonable length
-- [ ] T091 [P] [US6] Create `ShareLinkButton.tsx` component in `src/components/share/`: button in token detail view, onClick generates share URL via `encodeShareLink()`, copies to clipboard with "Copied!" confirmation, displays shortened URL preview inline
-- [ ] T092 [US6] Create `ShareLandingPage.tsx` component in `src/components/share/`: decode URL fragment via `decodeShareLink()`, display pre-filled `CreateTokenForm` with endpoint permissions and param constraints pre-selected, empty fields for: API name, base URL, auth method, credential, "Create Token" button that first creates API registration (via `parse-spec`) then creates token (via `generate-token`) — requires user to upload their own OpenAPI spec
-- [ ] T093 [US6] Create `SharePage.tsx` route in `src/pages/`: mount `ShareLandingPage` at `/share` path, handle auth guard (must be logged in to use share link), add route to React Router in `App.tsx`
-- [ ] T094 [US6] Integrate share button into `TokenDetailView.tsx`: add "Share Link" button at bottom of token detail (after activity log), position per ASCII mockup from spec thread
+- [x] T090 [US6] Implement share link encoding/decoding in `src/lib/share-link.ts`: `encodeShareLink(permissions, constraints, specReference)` → base64url-encoded JSON payload in URL fragment, `decodeShareLink(url)` → parsed permissions and constraints object, compress payload to keep URLs reasonable length
+- [x] T091 [P] [US6] Create `ShareLinkButton.tsx` component in `src/components/share/`: button in token detail view, onClick generates share URL via `encodeShareLink()`, copies to clipboard with "Copied!" confirmation, displays shortened URL preview inline
+- [x] T092 [US6] Create `ShareLandingPage.tsx` component in `src/components/share/`: decode URL fragment via `decodeShareLink()`, display pre-filled `CreateTokenForm` with endpoint permissions and param constraints pre-selected, empty fields for: API name, base URL, auth method, credential, "Create Token" button that first creates API registration (via `parse-spec`) then creates token (via `generate-token`) — requires user to upload their own OpenAPI spec
+- [x] T093 [US6] Create `SharePage.tsx` route in `src/pages/`: mount `ShareLandingPage` at `/share` path, handle auth guard (must be logged in to use share link), add route to React Router in `App.tsx`
+- [x] T094 [US6] Integrate share button into `TokenDetailView.tsx`: add "Share Link" button at bottom of token detail (after activity log), position per ASCII mockup from spec thread
 
 ### Playwright MCP Verification for User Story 6
 
@@ -246,8 +246,8 @@
 
 **Purpose**: Operational readiness, security hardening, edge cases
 
-- [ ] T096 [P] Create `update-credential` Supabase Edge Function in `supabase/functions/update-credential/index.ts`: accept api_id + new credential, verify ownership, update in Vault via `update_api_credential()`, return success
-- [ ] T097 [P] Create database migration for 30-day log purge in `supabase/migrations/009_log_purge_cron.sql`: enable `pg_cron` extension, schedule daily job `DELETE FROM request_logs WHERE created_at < now() - interval '30 days'`
+- [x] T096 [P] Create `update-credential` Supabase Edge Function in `supabase/functions/update-credential/index.ts`: accept api_id + new credential, verify ownership, update in Vault via `update_api_credential()`, return success
+- [x] T097 [P] Create database migration for 30-day log purge in `supabase/migrations/009_log_purge_cron.sql`: enable `pg_cron` extension, schedule daily job `DELETE FROM request_logs WHERE created_at < now() - interval '30 days'`
 - [ ] T098 [P] Handle spec re-upload in `ApiDetailView.tsx` and `parse-spec` Edge Function: when re-uploading a spec, delete old `parsed_endpoints`, re-parse and insert new ones, flag token permissions referencing removed endpoints as "endpoint no longer in spec"
 - [ ] T099 [P] Add empty states to all views: no APIs yet (welcome + "Add your first API" CTA in detail panel), no tokens for API (CTA in token section), no activity logs yet (placeholder message)
 - [ ] T100 [P] Add loading states: skeleton loaders in sidebar, detail panel, and activity log during TanStack Query loading

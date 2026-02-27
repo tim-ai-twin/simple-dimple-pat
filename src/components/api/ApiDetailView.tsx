@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useApiDetail, useDeleteApi } from "../../hooks/useApis";
+import { useApiActivityLog } from "../../hooks/useActivityLog";
+import ActivityLog from "../activity/ActivityLog";
 import type { ParsedEndpoint } from "../../../shared/types";
 
 interface ApiDetailViewProps {
@@ -48,6 +50,7 @@ export default function ApiDetailView({
 }: ApiDetailViewProps) {
   const { data: api, isLoading, error } = useApiDetail(apiId);
   const deleteApi = useDeleteApi();
+  const { data: activityLogs, isLoading: logsLoading } = useApiActivityLog(apiId);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -241,6 +244,14 @@ export default function ApiDetailView({
           ))}
         </div>
       )}
+
+      {/* Recent Activity */}
+      <div>
+        <h3 className="mb-2 font-heading text-lg font-bold text-text">
+          Recent Activity
+        </h3>
+        <ActivityLog logs={activityLogs ?? []} isLoading={logsLoading} />
+      </div>
 
       {/* Delete section */}
       <div className="border-t border-border-light pt-6">
