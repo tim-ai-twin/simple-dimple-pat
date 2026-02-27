@@ -1,0 +1,130 @@
+-- =============================================================================
+-- Seed data for simple-dimple-pat
+-- =============================================================================
+-- IMPORTANT: This seed file is commented out because the data depends on an
+-- auth.users record, which varies by environment. To use it:
+--
+--   1. Sign up / sign in to your local Supabase instance
+--   2. Copy your user UUID from auth.users
+--   3. Replace '<YOUR_USER_UUID>' below with that UUID
+--   4. Uncomment the statements
+--   5. Run: supabase db reset   (applies migrations + seed)
+-- =============================================================================
+
+-- -- Replace this with your actual auth.users UUID
+-- DO $$
+-- DECLARE
+--   v_user_id       uuid := '<YOUR_USER_UUID>';
+--   v_vault_id      uuid;
+--   v_api_id        uuid;
+--   v_endpoint_get  uuid;
+--   v_endpoint_post uuid;
+--   v_endpoint_by_id uuid;
+--   v_token_id      uuid;
+--   v_perm_get      uuid;
+--   v_perm_post     uuid;
+-- BEGIN
+--
+--   -- =========================================================================
+--   -- 1. Store a credential in the vault
+--   -- =========================================================================
+--   SELECT store_api_credential(
+--     v_user_id,
+--     'JSONPlaceholder Demo Key',
+--     'demo-api-key-abc123'
+--   ) INTO v_vault_id;
+--
+--   -- =========================================================================
+--   -- 2. Register a sample API (JSONPlaceholder)
+--   -- =========================================================================
+--   INSERT INTO api_registrations (
+--     id, user_id, name, base_url, auth_method, auth_header_name,
+--     credential_vault_id, spec_raw, spec_version
+--   ) VALUES (
+--     gen_random_uuid(),
+--     v_user_id,
+--     'JSONPlaceholder',
+--     'https://jsonplaceholder.typicode.com',
+--     'bearer_token',
+--     'Authorization',
+--     v_vault_id,
+--     '{"openapi":"3.0.0","info":{"title":"JSONPlaceholder","version":"1.0"}}',
+--     '3.0.0'
+--   ) RETURNING id INTO v_api_id;
+--
+--   -- =========================================================================
+--   -- 3. Add parsed endpoints
+--   -- =========================================================================
+--   INSERT INTO parsed_endpoints (id, api_id, operation_id, method, path_template, tag, summary, parameters, display_order)
+--   VALUES (
+--     gen_random_uuid(), v_api_id, 'listPosts', 'GET', '/posts', 'Posts',
+--     'List all posts',
+--     '[{"name":"_limit","in":"query","schema":{"type":"integer"}}]'::jsonb,
+--     1
+--   ) RETURNING id INTO v_endpoint_get;
+--
+--   INSERT INTO parsed_endpoints (id, api_id, operation_id, method, path_template, tag, summary, parameters, display_order)
+--   VALUES (
+--     gen_random_uuid(), v_api_id, 'createPost', 'POST', '/posts', 'Posts',
+--     'Create a new post',
+--     '[{"name":"body","in":"body","schema":{"type":"object"}}]'::jsonb,
+--     2
+--   ) RETURNING id INTO v_endpoint_post;
+--
+--   INSERT INTO parsed_endpoints (id, api_id, operation_id, method, path_template, tag, summary, parameters, display_order)
+--   VALUES (
+--     gen_random_uuid(), v_api_id, 'getPost', 'GET', '/posts/{id}', 'Posts',
+--     'Get a single post by ID',
+--     '[{"name":"id","in":"path","required":true,"schema":{"type":"integer"}}]'::jsonb,
+--     3
+--   ) RETURNING id INTO v_endpoint_by_id;
+--
+--   -- =========================================================================
+--   -- 4. Create an access token (hash is a placeholder SHA-256)
+--   -- =========================================================================
+--   INSERT INTO access_tokens (
+--     id, api_id, user_id, name, token_hash, token_prefix, status, expires_at
+--   ) VALUES (
+--     gen_random_uuid(),
+--     v_api_id,
+--     v_user_id,
+--     'Demo Read-Only Token',
+--     'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855', -- sha256 of empty string (placeholder)
+--     'sdp_demo_',
+--     'active',
+--     now() + interval '90 days'
+--   ) RETURNING id INTO v_token_id;
+--
+--   -- =========================================================================
+--   -- 5. Grant endpoint permissions to the token
+--   -- =========================================================================
+--   INSERT INTO token_endpoint_permissions (id, token_id, endpoint_id, is_allowed)
+--   VALUES (gen_random_uuid(), v_token_id, v_endpoint_get, true)
+--   RETURNING id INTO v_perm_get;
+--
+--   INSERT INTO token_endpoint_permissions (id, token_id, endpoint_id, is_allowed)
+--   VALUES (gen_random_uuid(), v_token_id, v_endpoint_post, false)
+--   RETURNING id INTO v_perm_post;
+--
+--   -- Token can also access the single-post endpoint (no constraint needed)
+--   INSERT INTO token_endpoint_permissions (token_id, endpoint_id, is_allowed)
+--   VALUES (v_token_id, v_endpoint_by_id, true);
+--
+--   -- =========================================================================
+--   -- 6. Add a parameter constraint (limit _limit to max 50)
+--   -- =========================================================================
+--   INSERT INTO parameter_constraints (permission_id, param_name, allowed_patterns)
+--   VALUES (v_perm_get, '_limit', ARRAY['1','2','5','10','25','50']);
+--
+--   -- =========================================================================
+--   -- 7. Insert sample request logs
+--   -- =========================================================================
+--   INSERT INTO request_logs (token_id, api_id, user_id, method, path, status_code, blocked, block_reason)
+--   VALUES
+--     (v_token_id, v_api_id, v_user_id, 'GET', '/posts?_limit=10', 200, false, NULL),
+--     (v_token_id, v_api_id, v_user_id, 'POST', '/posts', NULL, true, 'Endpoint not allowed for this token'),
+--     (v_token_id, v_api_id, v_user_id, 'GET', '/posts/1', 200, false, NULL);
+--
+--   RAISE NOTICE 'Seed data inserted successfully for user %', v_user_id;
+-- END;
+-- $$;

@@ -19,24 +19,24 @@
 
 **Purpose**: Project initialization, dependencies, configuration, and test fixtures
 
-- [ ] T001 Initialize Vite + React 18 + TypeScript project at repository root with `package.json`, `vite.config.ts`, `tsconfig.json`
+- [x] T001 Initialize Vite + React 18 + TypeScript project at repository root with `package.json`, `vite.config.ts`, `tsconfig.json`
 - [ ] T002 Create a new Supabase hosted project via `supabase projects create simple-dimple-pat` (or via dashboard), note the project ref, then initialize locally with `supabase init` and `supabase link --project-ref <ref>` creating `supabase/` directory and `supabase/config.toml`
-- [ ] T003 [P] Create `netlify.toml` with edge function routing: path `/proxy/*` → `proxy` edge function, Vite build settings
-- [ ] T004 [P] Create `netlify/edge-functions/` directory structure and Deno import map (`import_map.json`) mapping `@supabase/supabase-js` to esm.sh
-- [ ] T005 [P] Install frontend dependencies: `react`, `react-dom`, `@tanstack/react-query`, `@supabase/supabase-js`, `react-router-dom`, `tailwindcss`, `@radix-ui/react-*` (shadcn/ui primitives)
-- [ ] T006 [P] Install dev dependencies: `vitest`, `@playwright/test`, `@stoplight/prism-cli`, `mockttp`, `@readme/openapi-parser`
-- [ ] T007 [P] Configure Tailwind CSS in `tailwind.config.ts` with terracotta/cream theme tokens: primary `#8B3A2A`, background `#FAF3EB`, rounded pill shapes, serif headings + sans-serif body
-- [ ] T008 [P] Create design token constants in `src/theme/tokens.ts`: colors, typography scale, border radius, spacing
+- [x] T003 [P] Create `netlify.toml` with edge function routing: path `/proxy/*` → `proxy` edge function, Vite build settings
+- [x] T004 [P] Create `netlify/edge-functions/` directory structure and Deno import map (`import_map.json`) mapping `@supabase/supabase-js` to esm.sh
+- [x] T005 [P] Install frontend dependencies: `react`, `react-dom`, `@tanstack/react-query`, `@supabase/supabase-js`, `react-router-dom`, `tailwindcss`, `@radix-ui/react-*` (shadcn/ui primitives)
+- [x] T006 [P] Install dev dependencies: `vitest`, `@playwright/test`, `@stoplight/prism-cli`, `mockttp`, `@readme/openapi-parser`
+- [x] T007 [P] Configure Tailwind CSS in `tailwind.config.ts` with terracotta/cream theme tokens: primary `#8B3A2A`, background `#FAF3EB`, rounded pill shapes, serif headings + sans-serif body
+- [x] T008 [P] Create design token constants in `src/theme/tokens.ts`: colors, typography scale, border radius, spacing
 - [ ] T009 [P] Initialize shadcn/ui components in `src/components/ui/` themed with terracotta/cream palette: Button, Input, Checkbox, Badge, Dialog, DropdownMenu, Toggle, Tooltip
-- [ ] T010 [P] Create shared TypeScript types in `shared/types.ts`: `ApiRegistration`, `ParsedEndpoint`, `AccessToken`, `TokenEndpointPermission`, `ParameterConstraint`, `RequestLog`, `ShareTemplate`
-- [ ] T011 [P] Create test fixtures in `tests/fixtures/`: `petstore-minimal.yaml` (2 endpoints), `petstore-full.yaml` (full Petstore with tags/params/auth), `sdp-test-api.yaml` (custom spec with param constraint scenarios)
-- [ ] T012 [P] Configure Vitest in `vitest.config.ts` with unit test paths (`tests/unit/`) and integration test paths (`tests/integration/`)
-- [ ] T013 [P] Configure Playwright in `playwright.config.ts` with E2E test paths (`tests/e2e/`), base URL `http://localhost:8888`, and Playwright MCP integration
-- [ ] T014 [P] Add npm scripts to `package.json`: `dev`, `build`, `test:unit`, `test:integration`, `test:e2e`, `test:all`
+- [x] T010 [P] Create shared TypeScript types in `shared/types.ts`: `ApiRegistration`, `ParsedEndpoint`, `AccessToken`, `TokenEndpointPermission`, `ParameterConstraint`, `RequestLog`, `ShareTemplate`
+- [x] T011 [P] Create test fixtures in `tests/fixtures/`: `petstore-minimal.yaml` (2 endpoints), `petstore-full.yaml` (full Petstore with tags/params/auth), `sdp-test-api.yaml` (custom spec with param constraint scenarios)
+- [x] T012 [P] Configure Vitest in `vitest.config.ts` with unit test paths (`tests/unit/`) and integration test paths (`tests/integration/`)
+- [x] T013 [P] Configure Playwright in `playwright.config.ts` with E2E test paths (`tests/e2e/`), base URL `http://localhost:8888`, and Playwright MCP integration
+- [x] T014 [P] Add npm scripts to `package.json`: `dev`, `build`, `test:unit`, `test:integration`, `test:e2e`, `test:all`
 - [ ] T015 Create Netlify site via `netlify sites:create --name simple-dimple-pat` (or link existing), store site ID in `.netlify/state.json`, configure Netlify–Supabase integration to auto-provision `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` environment variables
-- [ ] T016 [P] Create GitHub Actions CI workflow in `.github/workflows/ci.yml`: on push/PR to `main` and feature branches — install deps, run `npm run test:unit`, run lint, build with `npm run build`
-- [ ] T017 [P] Create GitHub Actions deploy workflow in `.github/workflows/deploy.yml`: on push to `main` — build and deploy to Netlify production via `netlify deploy --prod` using `NETLIFY_AUTH_TOKEN` and `NETLIFY_SITE_ID` GitHub secrets; on PR — deploy preview via `netlify deploy` and comment preview URL on PR
-- [ ] T018 [P] Create GitHub Actions database migration workflow in `.github/workflows/migrate.yml`: on push to `main` when `supabase/migrations/` changes — run `supabase db push` to apply migrations to hosted Supabase project using `SUPABASE_ACCESS_TOKEN` and `SUPABASE_PROJECT_REF` GitHub secrets
+- [x] T016 [P] Create GitHub Actions CI workflow in `.github/workflows/ci.yml`: on push/PR to `main` and feature branches — install deps, run `npm run test:unit`, run lint, build with `npm run build`
+- [x] T017 [P] Create GitHub Actions deploy workflow in `.github/workflows/deploy.yml`: on push to `main` — build and deploy to Netlify production via `netlify deploy --prod` using `NETLIFY_AUTH_TOKEN` and `NETLIFY_SITE_ID` GitHub secrets; on PR — deploy preview via `netlify deploy` and comment preview URL on PR
+- [x] T018 [P] Create GitHub Actions database migration workflow in `.github/workflows/migrate.yml`: on push to `main` when `supabase/migrations/` changes — run `supabase db push` to apply migrations to hosted Supabase project using `SUPABASE_ACCESS_TOKEN` and `SUPABASE_PROJECT_REF` GitHub secrets
 - [ ] T019 [P] Document required GitHub repository secrets in `specs/001-token-gate/quickstart.md`: `NETLIFY_AUTH_TOKEN`, `NETLIFY_SITE_ID`, `SUPABASE_ACCESS_TOKEN`, `SUPABASE_PROJECT_REF`
 
 ---
@@ -47,25 +47,25 @@
 
 **CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T020 Create database migration `supabase/migrations/001_create_api_registrations.sql` with `api_registrations` table per data-model.md (all columns, constraints, indexes)
-- [ ] T021 Create database migration `supabase/migrations/002_create_parsed_endpoints.sql` with `parsed_endpoints` table, unique constraint on `(api_id, method, path_template)`, CASCADE delete from `api_registrations`
-- [ ] T022 Create database migration `supabase/migrations/003_create_access_tokens.sql` with `access_tokens` table, unique index on `token_hash`, status CHECK constraint, CASCADE delete from `api_registrations`
-- [ ] T023 Create database migration `supabase/migrations/004_create_token_endpoint_permissions.sql` with `token_endpoint_permissions` table, unique constraint on `(token_id, endpoint_id)`, CASCADE deletes
-- [ ] T024 Create database migration `supabase/migrations/005_create_parameter_constraints.sql` with `parameter_constraints` table, unique constraint on `(permission_id, param_name)`, CASCADE delete
-- [ ] T025 Create database migration `supabase/migrations/006_create_request_logs.sql` with `request_logs` table, indexes on `(api_id, created_at DESC)`, `(token_id, created_at DESC)`, `(created_at)`, ON DELETE SET NULL for token/api FKs
-- [ ] T026 Create database migration `supabase/migrations/007_vault_wrapper_functions.sql` with SECURITY DEFINER functions: `store_api_credential()`, `get_api_credential()`, `update_api_credential()`, `delete_api_credential()` per data-model.md Vault Usage section
-- [ ] T027 Create database migration `supabase/migrations/008_rls_policies.sql` with RLS policies: `user_id = auth.uid()` on `api_registrations`, `access_tokens`, `request_logs`; join-based policies on `parsed_endpoints`, `token_endpoint_permissions`, `parameter_constraints`
+- [x] T020 Create database migration `supabase/migrations/001_create_api_registrations.sql` with `api_registrations` table per data-model.md (all columns, constraints, indexes)
+- [x] T021 Create database migration `supabase/migrations/002_create_parsed_endpoints.sql` with `parsed_endpoints` table, unique constraint on `(api_id, method, path_template)`, CASCADE delete from `api_registrations`
+- [x] T022 Create database migration `supabase/migrations/003_create_access_tokens.sql` with `access_tokens` table, unique index on `token_hash`, status CHECK constraint, CASCADE delete from `api_registrations`
+- [x] T023 Create database migration `supabase/migrations/004_create_token_endpoint_permissions.sql` with `token_endpoint_permissions` table, unique constraint on `(token_id, endpoint_id)`, CASCADE deletes
+- [x] T024 Create database migration `supabase/migrations/005_create_parameter_constraints.sql` with `parameter_constraints` table, unique constraint on `(permission_id, param_name)`, CASCADE delete
+- [x] T025 Create database migration `supabase/migrations/006_create_request_logs.sql` with `request_logs` table, indexes on `(api_id, created_at DESC)`, `(token_id, created_at DESC)`, `(created_at)`, ON DELETE SET NULL for token/api FKs
+- [x] T026 Create database migration `supabase/migrations/007_vault_wrapper_functions.sql` with SECURITY DEFINER functions: `store_api_credential()`, `get_api_credential()`, `update_api_credential()`, `delete_api_credential()` per data-model.md Vault Usage section
+- [x] T027 Create database migration `supabase/migrations/008_rls_policies.sql` with RLS policies: `user_id = auth.uid()` on `api_registrations`, `access_tokens`, `request_logs`; join-based policies on `parsed_endpoints`, `token_endpoint_permissions`, `parameter_constraints`
 - [ ] T028 [P] Configure Supabase Auth with Google OAuth provider in `supabase/config.toml` (scopes: `openid`, `email`, `profile`)
-- [ ] T029 [P] Create Supabase client initialization in `src/lib/supabase.ts` using `SUPABASE_URL` and `SUPABASE_ANON_KEY` env vars, with auth session persistence
-- [ ] T030 [P] Create service role admin client in `supabase/functions/_shared/supabase-admin.ts` using `SUPABASE_SERVICE_ROLE_KEY`
-- [ ] T031 [P] Create CORS helper in `supabase/functions/_shared/cors.ts` with standard CORS headers for Edge Function responses
-- [ ] T032 [P] Implement glob pattern matching utility in `src/lib/glob.ts`: function `matchGlob(pattern: string, value: string): boolean` supporting `*` (any chars) and `?` (single char), plus `matchAnyGlob(patterns: string[], value: string): boolean`
-- [ ] T033 [P] Implement token utilities in `supabase/functions/_shared/token-utils.ts`: `generateToken()` (crypto.getRandomValues + base62 encoding + CRC32), `hashToken()` (SHA-256 hex via crypto.subtle), `validateTokenFormat()` (sdp_ prefix + CRC32 check)
-- [ ] T034 [P] Create auth guard wrapper in `src/App.tsx` with React Router: redirect unauthenticated users to login, wrap authenticated routes with Supabase session provider
-- [ ] T035 [P] Create TanStack Query provider setup in `src/App.tsx` with `QueryClient` configuration
-- [ ] T036 [P] Create master-detail layout shell in `src/components/layout/`: `Header.tsx` (top bar with user info + logout), `Sidebar.tsx` (placeholder collapsible tree), `DetailPanel.tsx` (placeholder right panel) — styled with terracotta/cream theme
-- [ ] T037 Create main `DashboardPage.tsx` in `src/pages/` composing Header + Sidebar + DetailPanel in a CSS grid/flex layout
-- [ ] T038 [P] Create seed data in `supabase/seed.sql`: test user, sample API registration (Petstore), sample parsed endpoints, sample token
+- [x] T029 [P] Create Supabase client initialization in `src/lib/supabase.ts` using `SUPABASE_URL` and `SUPABASE_ANON_KEY` env vars, with auth session persistence
+- [x] T030 [P] Create service role admin client in `supabase/functions/_shared/supabase-admin.ts` using `SUPABASE_SERVICE_ROLE_KEY`
+- [x] T031 [P] Create CORS helper in `supabase/functions/_shared/cors.ts` with standard CORS headers for Edge Function responses
+- [x] T032 [P] Implement glob pattern matching utility in `src/lib/glob.ts`: function `matchGlob(pattern: string, value: string): boolean` supporting `*` (any chars) and `?` (single char), plus `matchAnyGlob(patterns: string[], value: string): boolean`
+- [x] T033 [P] Implement token utilities in `supabase/functions/_shared/token-utils.ts`: `generateToken()` (crypto.getRandomValues + base62 encoding + CRC32), `hashToken()` (SHA-256 hex via crypto.subtle), `validateTokenFormat()` (sdp_ prefix + CRC32 check)
+- [x] T034 [P] Create auth guard wrapper in `src/App.tsx` with React Router: redirect unauthenticated users to login, wrap authenticated routes with Supabase session provider
+- [x] T035 [P] Create TanStack Query provider setup in `src/App.tsx` with `QueryClient` configuration
+- [x] T036 [P] Create master-detail layout shell in `src/components/layout/`: `Header.tsx` (top bar with user info + logout), `Sidebar.tsx` (placeholder collapsible tree), `DetailPanel.tsx` (placeholder right panel) — styled with terracotta/cream theme
+- [x] T037 Create main `DashboardPage.tsx` in `src/pages/` composing Header + Sidebar + DetailPanel in a CSS grid/flex layout
+- [x] T038 [P] Create seed data in `supabase/seed.sql`: test user, sample API registration (Petstore), sample parsed endpoints, sample token
 
 **Checkpoint**: Foundation ready — database schema deployed, auth working, layout shell visible, utilities tested. User story implementation can begin.
 
