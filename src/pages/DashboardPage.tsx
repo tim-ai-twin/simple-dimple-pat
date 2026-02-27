@@ -5,6 +5,7 @@ import Sidebar from "../components/layout/Sidebar";
 import DetailPanel from "../components/layout/DetailPanel";
 import AddApiForm from "../components/api/AddApiForm";
 import ApiDetailView from "../components/api/ApiDetailView";
+import ReuploadSpecForm from "../components/api/ReuploadSpecForm";
 import CreateTokenForm from "../components/token/CreateTokenForm";
 import TokenDetailView from "../components/token/TokenDetailView";
 
@@ -13,7 +14,8 @@ type ViewState =
   | { type: "add-api" }
   | { type: "api-detail"; apiId: string }
   | { type: "token-detail"; tokenId: string }
-  | { type: "create-token"; apiId: string };
+  | { type: "create-token"; apiId: string }
+  | { type: "reupload-spec"; apiId: string; apiName: string };
 
 export default function DashboardPage() {
   const [view, setView] = useState<ViewState>({ type: "welcome" });
@@ -44,6 +46,21 @@ export default function DashboardPage() {
             onCreateToken={() =>
               setView({ type: "create-token", apiId: view.apiId })
             }
+            onReupload={() =>
+              setView({
+                type: "reupload-spec",
+                apiId: view.apiId,
+                apiName: "API",
+              })
+            }
+          />
+        );
+      case "reupload-spec":
+        return (
+          <ReuploadSpecForm
+            apiId={view.apiId}
+            apiName={view.apiName}
+            onDone={() => setView({ type: "api-detail", apiId: view.apiId })}
           />
         );
       case "create-token":
@@ -60,8 +77,25 @@ export default function DashboardPage() {
             onDeleted={() => setView({ type: "welcome" })}
           />
         );
+      case "welcome":
       default:
-        return null;
+        return (
+          <div className="flex h-full flex-col items-center justify-center">
+            <h2 className="mb-2 font-heading text-2xl font-bold text-primary">
+              Welcome to Simple Dimple PAT
+            </h2>
+            <p className="mb-6 max-w-md text-center text-text-light">
+              Register your first API to start creating scoped access tokens
+              for your AI agents.
+            </p>
+            <button
+              onClick={() => setView({ type: "add-api" })}
+              className="rounded-pill bg-primary px-6 py-2.5 text-sm font-semibold uppercase tracking-wider text-text-on-primary transition-colors hover:bg-primary-light"
+            >
+              + Add Your First API
+            </button>
+          </div>
+        );
     }
   };
 

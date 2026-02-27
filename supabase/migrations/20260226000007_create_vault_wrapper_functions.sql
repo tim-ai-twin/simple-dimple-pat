@@ -88,8 +88,9 @@ COMMENT ON FUNCTION update_api_credential(uuid, uuid, text)
   IS 'Updates a Vault secret value after verifying the caller owns the associated API registration.';
 
 
--- Delete an API credential from the vault.
+-- Delete an API credential from the vault after verifying ownership.
 CREATE OR REPLACE FUNCTION delete_api_credential(
+  p_user_id uuid,
   p_vault_id uuid
 )
 RETURNS void
@@ -98,9 +99,19 @@ SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
+  -- Verify the caller owns an API registration linked to this vault id
+  IF NOT EXISTS (
+    SELECT 1
+    FROM api_registrations
+    WHERE credential_vault_id = p_vault_id
+      AND user_id = p_user_id
+  ) THEN
+    RAISE EXCEPTION 'Credential not found or access denied';
+  END IF;
+
   DELETE FROM vault.secrets WHERE id = p_vault_id;
 END;
 $$;
 
-COMMENT ON FUNCTION delete_api_credential(uuid)
-  IS 'Removes a secret from Supabase Vault by id.';
+COMMENT ON FUNCTION delete_api_credential(uuid, uuid)
+  IS 'Removes a secret from Supabase Vault by id after verifying the caller owns the associated API registration.';

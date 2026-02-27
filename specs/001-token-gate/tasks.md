@@ -248,11 +248,11 @@
 
 - [x] T096 [P] Create `update-credential` Supabase Edge Function in `supabase/functions/update-credential/index.ts`: accept api_id + new credential, verify ownership, update in Vault via `update_api_credential()`, return success
 - [x] T097 [P] Create database migration for 30-day log purge in `supabase/migrations/009_log_purge_cron.sql`: enable `pg_cron` extension, schedule daily job `DELETE FROM request_logs WHERE created_at < now() - interval '30 days'`
-- [ ] T098 [P] Handle spec re-upload in `ApiDetailView.tsx` and `parse-spec` Edge Function: when re-uploading a spec, delete old `parsed_endpoints`, re-parse and insert new ones, flag token permissions referencing removed endpoints as "endpoint no longer in spec"
-- [ ] T099 [P] Add empty states to all views: no APIs yet (welcome + "Add your first API" CTA in detail panel), no tokens for API (CTA in token section), no activity logs yet (placeholder message)
-- [ ] T100 [P] Add loading states: skeleton loaders in sidebar, detail panel, and activity log during TanStack Query loading
-- [ ] T101 [P] Add error boundary and toast notifications: global error boundary in `App.tsx`, toast component for success/error feedback on mutations (token created, API deleted, etc.)
-- [ ] T102 Security review: verify no raw tokens in logs or network responses (except show-once), verify Vault wrapper functions enforce user_id ownership, verify RLS policies block cross-user access, verify `service_role` key only used in Edge Functions (never in frontend)
+- [x] T098 [P] Handle spec re-upload in `ApiDetailView.tsx` and `parse-spec` Edge Function: when re-uploading a spec, delete old `parsed_endpoints`, re-parse and insert new ones, flag token permissions referencing removed endpoints as "endpoint no longer in spec"
+- [x] T099 [P] Add empty states to all views: no APIs yet (welcome + "Add your first API" CTA in detail panel), no tokens for API (CTA in token section), no activity logs yet (placeholder message)
+- [x] T100 [P] Add loading states: skeleton loaders in sidebar, detail panel, and activity log during TanStack Query loading
+- [x] T101 [P] Add error boundary and toast notifications: global error boundary in `App.tsx`, toast component for success/error feedback on mutations (token created, API deleted, etc.)
+- [x] T102 Security review: verify no raw tokens in logs or network responses (except show-once), verify Vault wrapper functions enforce user_id ownership, verify RLS policies block cross-user access, verify `service_role` key only used in Edge Functions (never in frontend)
 - [ ] T103 Run quickstart.md validation: follow `specs/001-token-gate/quickstart.md` steps from scratch, verify local development environment works end-to-end
 
 ---

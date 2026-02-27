@@ -28,6 +28,7 @@ interface RequestBody {
   auth_query_param: string | null;
   credential: string;
   spec_content: string;
+  api_id?: string; // If provided, re-upload spec for existing API
 }
 
 const HTTP_METHODS = ["get", "post", "put", "patch", "delete", "head", "options"];
@@ -180,7 +181,20 @@ Deno.serve(async (req: Request) => {
     // Parse request body
     const body: RequestBody = await req.json();
 
-    if (!body.name || !body.base_url || !body.auth_method || !body.spec_content) {
+    const isReupload = !!body.api_id;
+
+    // For re-upload, only spec_content is required
+    if (isReupload) {
+      if (!body.spec_content) {
+        return new Response(
+          JSON.stringify({
+            error: "bad_request",
+            message: "Missing required field: spec_content",
+          }),
+          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      }
+    } else if (!body.name || !body.base_url || !body.auth_method || !body.spec_content) {
       return new Response(
         JSON.stringify({
           error: "bad_request",
@@ -224,57 +238,117 @@ Deno.serve(async (req: Request) => {
       spec.paths as Record<string, Record<string, unknown>>,
     );
 
-    // Store credential in Vault
-    const { data: vaultResult, error: vaultError } = await supabaseAdmin.rpc(
-      "store_api_credential",
-      {
-        p_user_id: user.id,
-        p_name: `${body.name} credential`,
-        p_value: body.credential,
-      },
-    );
+    let apiId: string;
 
-    if (vaultError) {
-      return new Response(
-        JSON.stringify({
-          error: "vault_error",
-          message: `Failed to store credential: ${vaultError.message}`,
-        }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+    if (isReupload) {
+      // Re-upload mode: verify ownership, delete old endpoints, update spec
+      const { data: existingApi, error: lookupError } = await supabaseAdmin
+        .from("api_registrations")
+        .select("id, user_id")
+        .eq("id", body.api_id!)
+        .single();
+
+      if (lookupError || !existingApi) {
+        return new Response(
+          JSON.stringify({ error: "not_found", message: "API not found" }),
+          { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      }
+
+      if (existingApi.user_id !== user.id) {
+        return new Response(
+          JSON.stringify({ error: "forbidden", message: "You do not own this API" }),
+          { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      }
+
+      apiId = existingApi.id;
+
+      // Delete old endpoints (cascades to permissions and constraints)
+      const { error: deleteError } = await supabaseAdmin
+        .from("parsed_endpoints")
+        .delete()
+        .eq("api_id", apiId);
+
+      if (deleteError) {
+        return new Response(
+          JSON.stringify({
+            error: "db_error",
+            message: `Failed to delete old endpoints: ${deleteError.message}`,
+          }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      }
+
+      // Update spec_raw and spec_version on the API registration
+      const { error: updateError } = await supabaseAdmin
+        .from("api_registrations")
+        .update({ spec_raw: body.spec_content, spec_version: specVersion })
+        .eq("id", apiId);
+
+      if (updateError) {
+        return new Response(
+          JSON.stringify({
+            error: "db_error",
+            message: `Failed to update API: ${updateError.message}`,
+          }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      }
+    } else {
+      // New API mode: store credential, create registration
+      const { data: vaultResult, error: vaultError } = await supabaseAdmin.rpc(
+        "store_api_credential",
+        {
+          p_user_id: user.id,
+          p_name: `${body.name} credential`,
+          p_value: body.credential,
+        },
       );
-    }
 
-    // Insert api_registration row
-    const { data: api, error: apiError } = await supabaseAdmin
-      .from("api_registrations")
-      .insert({
-        user_id: user.id,
-        name: body.name,
-        base_url: body.base_url,
-        auth_method: body.auth_method,
-        auth_header_name: body.auth_header_name,
-        auth_query_param: body.auth_query_param,
-        credential_vault_id: vaultResult,
-        spec_raw: body.spec_content,
-        spec_version: specVersion,
-      })
-      .select()
-      .single();
+      if (vaultError) {
+        return new Response(
+          JSON.stringify({
+            error: "vault_error",
+            message: `Failed to store credential: ${vaultError.message}`,
+          }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      }
 
-    if (apiError) {
-      return new Response(
-        JSON.stringify({
-          error: "db_error",
-          message: `Failed to create API registration: ${apiError.message}`,
-        }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
-      );
+      const { data: api, error: apiError } = await supabaseAdmin
+        .from("api_registrations")
+        .insert({
+          user_id: user.id,
+          name: body.name,
+          base_url: body.base_url,
+          auth_method: body.auth_method,
+          auth_header_name: body.auth_header_name,
+          auth_query_param: body.auth_query_param,
+          credential_vault_id: vaultResult,
+          spec_raw: body.spec_content,
+          spec_version: specVersion,
+        })
+        .select()
+        .single();
+
+      if (apiError) {
+        return new Response(
+          JSON.stringify({
+            error: "db_error",
+            message: `Failed to create API registration: ${apiError.message}`,
+          }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      }
+
+      apiId = api.id;
     }
 
     // Insert parsed endpoints
     if (endpoints.length > 0) {
       const endpointRows = endpoints.map((ep) => ({
-        api_id: api.id,
+        api_id: apiId,
         method: ep.method,
         path_template: ep.path,
         operation_id: ep.operation_id,
@@ -302,10 +376,11 @@ Deno.serve(async (req: Request) => {
     // Return success
     return new Response(
       JSON.stringify({
-        api_id: api.id,
+        api_id: apiId,
         endpoint_count: endpoints.length,
         spec_version: specVersion,
         tags,
+        reupload: isReupload,
       }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );

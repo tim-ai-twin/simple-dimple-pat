@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { supabase } from "./lib/supabase";
 import type { Session } from "@supabase/supabase-js";
+import ErrorBoundary from "./components/ui/ErrorBoundary";
 import DashboardPage from "./pages/DashboardPage";
 import SharePage from "./pages/SharePage";
 
@@ -77,16 +78,18 @@ function LoginPage() {
 
 export default function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <AuthGuard>
-          <Routes>
-            <Route path="/" element={<DashboardPage />} />
-            <Route path="/share" element={<SharePage />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </AuthGuard>
-      </BrowserRouter>
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <AuthGuard>
+            <Routes>
+              <Route path="/" element={<DashboardPage />} />
+              <Route path="/share" element={<SharePage />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </AuthGuard>
+        </BrowserRouter>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }

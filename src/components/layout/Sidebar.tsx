@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useApiList } from "../../hooks/useApis";
 import { useTokensForApi } from "../../hooks/useTokens";
+import { SidebarSkeleton } from "../ui/Skeleton";
 import type { ApiRegistration, AccessToken } from "../../../shared/types";
 
 interface SidebarProps {
@@ -103,9 +104,7 @@ export default function Sidebar({ onSelect, onAddApi, selectedId }: SidebarProps
   return (
     <aside className="flex h-full w-64 flex-col border-r border-border-light bg-cream">
       <div className="flex-1 overflow-y-auto p-3">
-        {isLoading && (
-          <p className="px-1 py-2 text-xs text-text-light">Loading...</p>
-        )}
+        {isLoading && <SidebarSkeleton />}
 
         {!isLoading && (!apis || apis.length === 0) && (
           <p className="px-1 py-2 text-sm text-text-light">
