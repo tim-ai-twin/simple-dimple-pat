@@ -5,6 +5,8 @@ import Sidebar from "../components/layout/Sidebar";
 import DetailPanel from "../components/layout/DetailPanel";
 import AddApiForm from "../components/api/AddApiForm";
 import ApiDetailView from "../components/api/ApiDetailView";
+import CreateTokenForm from "../components/token/CreateTokenForm";
+import TokenDetailView from "../components/token/TokenDetailView";
 
 type ViewState =
   | { type: "welcome" }
@@ -44,15 +46,19 @@ export default function DashboardPage() {
             }
           />
         );
-      case "token-detail":
-        return (
-          <p className="text-text-light">Token detail for {view.tokenId}</p>
-        );
       case "create-token":
         return (
-          <p className="text-text-light">
-            Create token for API {view.apiId}
-          </p>
+          <CreateTokenForm
+            apiId={view.apiId}
+            onDone={() => setView({ type: "api-detail", apiId: view.apiId })}
+          />
+        );
+      case "token-detail":
+        return (
+          <TokenDetailView
+            tokenId={view.tokenId}
+            onDeleted={() => setView({ type: "welcome" })}
+          />
         );
       default:
         return null;

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useApiList } from "../../hooks/useApis";
-import type { ApiRegistration } from "../../../shared/types";
+import { useTokensForApi } from "../../hooks/useTokens";
+import type { ApiRegistration, AccessToken } from "../../../shared/types";
 
 interface SidebarProps {
   onSelect?: (type: string, id: string) => void;
@@ -20,11 +21,70 @@ function getEndpointCount(api: ApiRegistration): number {
   return 0;
 }
 
-function getTokenCount(api: ApiRegistration): number {
-  if (api.access_tokens && api.access_tokens.length > 0) {
-    return api.access_tokens[0].count;
+function getTokenStatusColor(token: AccessToken): string {
+  if (token.status === "disabled") return "bg-error";
+  if (token.status === "expired") return "bg-error";
+
+  const expiresAt = new Date(token.expires_at);
+  const now = new Date();
+  if (expiresAt < now) return "bg-error";
+
+  const sevenDays = 7 * 24 * 60 * 60 * 1000;
+  if (expiresAt.getTime() - now.getTime() < sevenDays) return "bg-warning";
+
+  return "bg-success";
+}
+
+function ApiTokenChildren({
+  apiId,
+  onSelect,
+  selectedId,
+}: {
+  apiId: string;
+  onSelect?: (type: string, id: string) => void;
+  selectedId?: string | null;
+}) {
+  const { data: tokens, isLoading } = useTokensForApi(apiId);
+
+  if (isLoading) {
+    return (
+      <div className="ml-6 py-1">
+        <p className="px-2 py-0.5 text-xs text-text-light">Loading...</p>
+      </div>
+    );
   }
-  return 0;
+
+  if (!tokens || tokens.length === 0) {
+    return (
+      <div className="ml-6 py-0.5">
+        <p className="px-2 py-1 text-xs text-text-light">No tokens yet</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="ml-6 space-y-0.5 py-0.5">
+      {tokens.map((token) => {
+        const isSelected = selectedId === token.id;
+        const statusColor = getTokenStatusColor(token);
+
+        return (
+          <button
+            key={token.id}
+            onClick={() => onSelect?.("token", token.id)}
+            className={`flex w-full items-center gap-2 rounded-lg px-2 py-1 text-left text-xs transition-colors ${
+              isSelected
+                ? "bg-primary/10 font-medium text-primary"
+                : "text-text-light hover:bg-primary/5 hover:text-text"
+            }`}
+          >
+            <span className={`h-2 w-2 shrink-0 rounded-full ${statusColor}`} />
+            <span className="truncate">{token.name}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
 }
 
 export default function Sidebar({ onSelect, onAddApi, selectedId }: SidebarProps) {
@@ -59,7 +119,6 @@ export default function Sidebar({ onSelect, onAddApi, selectedId }: SidebarProps
               const isSelected = selectedId === api.id;
               const isExpanded = expandedApis.has(api.id);
               const endpointCount = getEndpointCount(api);
-              const tokenCount = getTokenCount(api);
 
               return (
                 <div key={api.id}>
@@ -98,19 +157,13 @@ export default function Sidebar({ onSelect, onAddApi, selectedId }: SidebarProps
                     </button>
                   </div>
 
-                  {/* Token children (placeholder — populated in US2) */}
+                  {/* Token children */}
                   {isExpanded && (
-                    <div className="ml-6 space-y-0.5 py-0.5">
-                      {tokenCount > 0 ? (
-                        <p className="px-2 py-1 text-xs text-text-light">
-                          {tokenCount} {tokenCount === 1 ? "token" : "tokens"}
-                        </p>
-                      ) : (
-                        <p className="px-2 py-1 text-xs text-text-light">
-                          No tokens yet
-                        </p>
-                      )}
-                    </div>
+                    <ApiTokenChildren
+                      apiId={api.id}
+                      onSelect={onSelect}
+                      selectedId={selectedId}
+                    />
                   )}
                 </div>
               );
