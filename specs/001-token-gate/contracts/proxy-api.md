@@ -8,7 +8,7 @@ All requests to `/proxy/*` are intercepted by the Netlify Edge Function.
 
 ## Authentication
 
-Every proxy request MUST include a TokenGate token as a Bearer token:
+Every proxy request MUST include a Simple Dimple PAT token as a Bearer token:
 
 ```
 Authorization: Bearer sdp_aBcDeFgHiJkLmNoPqRsTuVwXyZ012345
@@ -64,7 +64,7 @@ These are returned by the proxy itself, not forwarded from upstream:
 
 All proxy-generated error responses include:
 - `Content-Type: application/json`
-- `X-TokenGate-Error: true` header (to distinguish from upstream errors)
+- `X-SDP-Error: true` header (to distinguish from upstream errors)
 
 ---
 
@@ -72,7 +72,7 @@ All proxy-generated error responses include:
 
 For successful requests, the proxy returns the upstream response as-is:
 - Status code from upstream
-- Headers from upstream (with `X-TokenGate-Token: {token_name}` added)
+- Headers from upstream (with `X-SDP-Token: {token_name}` added)
 - Body streamed from upstream
 
 ---

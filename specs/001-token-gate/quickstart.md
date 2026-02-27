@@ -1,4 +1,4 @@
-# Quickstart: TokenGate Local Development
+# Quickstart: Simple Dimple PAT Local Development
 
 **Branch**: `001-token-gate` | **Date**: 2026-02-26
 

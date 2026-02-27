@@ -1,4 +1,4 @@
-# Feature Specification: TokenGate — Personal Token Management for AI Agents
+# Feature Specification: Simple Dimple PAT — Personal Token Management for AI Agents
 
 **Feature Branch**: `001-token-gate`
 **Created**: 2026-02-26
@@ -34,7 +34,7 @@ A user wants to create an access token for a specific AI agent (e.g., "cursor-ag
 
 **Acceptance Scenarios**:
 
-1. **Given** an API is registered, **When** the user creates a new token with a name, reviews the endpoint list (all checked/allowed by default), unchecks any endpoints to deny, sets parameter constraints (glob patterns as removable chips), and sets an expiration date, **Then** the token is created and displayed with a copyable token value (e.g., `tg_a8f3...d92e`).
+1. **Given** an API is registered, **When** the user creates a new token with a name, reviews the endpoint list (all checked/allowed by default), unchecks any endpoints to deny, sets parameter constraints (glob patterns as removable chips), and sets an expiration date, **Then** the token is created and displayed with a copyable token value (e.g., `sdp_a8f3...d92e`).
 2. **Given** a token exists, **When** the user views it in the detail panel, **Then** they see: token identity (name, obscured value, copy/regenerate buttons), lifecycle controls (active/disabled toggle, expiration date picker, "Expire Now" button), endpoint permissions with checkboxes, and parameter constraint chips.
 3. **Given** a token has parameter constraints, **When** the user types a glob pattern (e.g., `my-org-*`) and presses Enter, **Then** it appears as a removable chip in the parameter constraint field for that endpoint parameter.
 4. **Given** an endpoint is unchecked, **When** an agent makes a request to that endpoint using this token, **Then** the proxy returns a 403 with a reason indicating the endpoint is not permitted.
@@ -43,7 +43,7 @@ A user wants to create an access token for a specific AI agent (e.g., "cursor-ag
 
 ### User Story 3 — Proxy Validates and Forwards Agent Requests (Priority: P1)
 
-An AI agent makes an API call using a TokenGate token. The runtime proxy validates the token, checks endpoint and parameter permissions, logs the request, and either forwards it with the real credential or rejects it with a clear reason.
+An AI agent makes an API call using an SDP token. The runtime proxy validates the token, checks endpoint and parameter permissions, logs the request, and either forwards it with the real credential or rejects it with a clear reason.
 
 **Why this priority**: The proxy is the runtime enforcement layer — without it, tokens are just metadata. This is the core technical capability that makes the product functional.
 

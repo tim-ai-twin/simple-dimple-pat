@@ -1,4 +1,4 @@
-# Research: TokenGate Implementation
+# Research: Simple Dimple PAT Implementation
 
 **Branch**: `001-token-gate` | **Date**: 2026-02-26
 
@@ -33,7 +33,7 @@
 
 ## Decision 2: Token Storage — SHA-256 Hash
 
-**Decision**: Store TokenGate-issued tokens as SHA-256 hashes. Never persist or log the raw token.
+**Decision**: Store Simple Dimple PAT-issued tokens as SHA-256 hashes. Never persist or log the raw token.
 
 **Rationale**:
 - Industry standard for high-entropy opaque tokens (GitHub uses SHA-256 for PATs)
@@ -122,7 +122,7 @@ Key verifications:
 
 - **Minimal Petstore** (learn.openapis.org): 2 endpoints, for unit tests of spec parsing
 - **Full Swagger Petstore**: Multiple tags, methods, path/query params, API Key auth — for integration tests
-- **Custom TokenGate fixture**: Tailored spec with specific parameters for constraint testing
+- **Custom SDP fixture**: Tailored spec with specific parameters for constraint testing
 
 **Alternatives considered**:
 - Nock: Cannot intercept Deno runtime outbound calls — only works in-process for Node.js

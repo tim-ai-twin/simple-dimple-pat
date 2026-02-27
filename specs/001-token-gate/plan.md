@@ -1,11 +1,11 @@
-# Implementation Plan: TokenGate
+# Implementation Plan: Simple Dimple PAT
 
 **Branch**: `001-token-gate` | **Date**: 2026-02-26 | **Spec**: [spec.md](./spec.md)
 **Input**: Feature specification from `/specs/001-token-gate/spec.md`
 
 ## Summary
 
-Build TokenGate — a personal token management system for AI agents — deployed on Netlify (frontend + proxy Edge Function) and Supabase (Auth, Postgres, Edge Functions for token generation and spec parsing). The proxy intercepts requests at `/proxy/{api_id}/*`, validates scoped tokens (SHA-256 hashed, stored in Postgres), enforces endpoint/parameter permissions derived from uploaded OpenAPI specs, then forwards with real credentials (stored in Supabase Vault). Management UI uses a master-detail layout with warm terracotta/cream theme.
+Build Simple Dimple PAT — a personal token management system for AI agents — deployed on Netlify (frontend + proxy Edge Function) and Supabase (Auth, Postgres, Edge Functions for token generation and spec parsing). The proxy intercepts requests at `/proxy/{api_id}/*`, validates scoped tokens (SHA-256 hashed, stored in Postgres), enforces endpoint/parameter permissions derived from uploaded OpenAPI specs, then forwards with real credentials (stored in Supabase Vault). Management UI uses a master-detail layout with warm terracotta/cream theme.
 
 ## Technical Context
 
@@ -156,7 +156,7 @@ tests/
 └── fixtures/
     ├── petstore-minimal.yaml       # 2 endpoints, for unit tests
     ├── petstore-full.yaml          # Full Petstore, for integration tests
-    └── tokengate-test-api.yaml     # Custom spec with param constraint scenarios
+    └── sdp-test-api.yaml     # Custom spec with param constraint scenarios
 ```
 
 **Structure Decision**: Web application pattern — frontend (Vite/React in `src/`) with backend split between Netlify Edge Functions (`netlify/edge-functions/`) for the proxy and Supabase Edge Functions (`supabase/functions/`) for DB-heavy operations. Shared types in `shared/types.ts`. Tests in `tests/` organized by test type.

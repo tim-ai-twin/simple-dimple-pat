@@ -1,4 +1,4 @@
-# Data Model: TokenGate
+# Data Model: Simple Dimple PAT
 
 **Branch**: `001-token-gate` | **Date**: 2026-02-26
 
