@@ -16,9 +16,7 @@ AS $$
 DECLARE
   v_secret_id uuid;
 BEGIN
-  SELECT id INTO v_secret_id
-  FROM vault.create_secret(p_value, p_name);
-
+  v_secret_id := vault.create_secret(p_value, p_name);
   RETURN v_secret_id;
 END;
 $$;
