@@ -113,8 +113,8 @@
 
 **Purpose**: Deploy, verify end-to-end, clean up
 
-- [ ] T013 Build and deploy frontend to Netlify production. Run `npm run build` and verify no build errors. Deploy via Netlify (auto-deploy on push or manual trigger).
-- [ ] T014 End-to-end smoke test on production: (1) Visit landing page, (2) Click "Demo Account" → dashboard with Petstore data, (3) Verify demo mode badge in header, (4) Navigate APIs, tokens, activity log, (5) Click "Reset Demo" → confirm → data refreshes, (6) Sign out → landing page, (7) Verify "Sign in with Google" still works for real accounts.
+- [x] T013 Build and deploy frontend to Netlify production. Run `npm run build` and verify no build errors. Deploy via Netlify (auto-deploy on push or manual trigger).
+- [x] T014 End-to-end smoke test on production: (1) Visit landing page, (2) Click "Demo Account" → dashboard with Petstore data, (3) Verify demo mode badge in header, (4) Navigate APIs, tokens, activity log, (5) Click "Reset Demo" → confirm → data refreshes, (6) Sign out → landing page, (7) Verify "Sign in with Google" still works for real accounts.
 
 ---
 
