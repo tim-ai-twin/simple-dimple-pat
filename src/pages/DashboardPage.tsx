@@ -109,7 +109,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="flex h-screen flex-col">
+    <div className="flex h-full flex-col">
       <Header />
       <div className="flex flex-1 overflow-hidden">
         <Sidebar

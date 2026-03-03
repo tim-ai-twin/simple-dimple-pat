@@ -98,10 +98,11 @@ Deno.serve(async (req: Request) => {
       .filter(Boolean);
 
     for (const vid of vaultIds) {
+      // Vault secret may already be gone — ignore errors
       await supabaseAdmin.rpc("delete_api_credential", {
         p_user_id: DEMO_USER_ID,
         p_vault_id: vid,
-      }).catch(() => { /* vault secret may already be gone */ });
+      });
     }
 
     // 4. Delete API registrations (cascades to parsed_endpoints)

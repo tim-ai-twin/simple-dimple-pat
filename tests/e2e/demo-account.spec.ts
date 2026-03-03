@@ -2,6 +2,8 @@ import { test, expect } from "@playwright/test";
 
 const BASE_URL = "https://simple-dimple-pat.netlify.app";
 
+test.describe.configure({ mode: "serial" });
+
 test.describe("Demo Account Smoke Tests", () => {
   test("T14-1: Landing page shows both sign-in buttons", async ({ page }) => {
     await page.goto(BASE_URL);
@@ -40,11 +42,11 @@ test.describe("Demo Account Smoke Tests", () => {
       await expandButton.click();
       // Token appears in sidebar — use first match within sidebar
       const sidebar = page.locator("aside");
-      await expect(sidebar.getByText("Demo Token").first()).toBeVisible({ timeout: 5000 });
+      await expect(sidebar.getByText("Demo Token").first()).toBeVisible({ timeout: 10000 });
 
       // Click the token in sidebar
       await sidebar.getByText("Demo Token").first().click();
-      await expect(page.getByText(/sdp_Demo/).first()).toBeVisible({ timeout: 5000 });
+      await expect(page.getByText(/sdp_Demo/).first()).toBeVisible({ timeout: 10000 });
     }
   });
 

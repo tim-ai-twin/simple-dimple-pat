@@ -44,7 +44,7 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
 
   if (loading) {
     return (
-      <div className="flex h-screen items-center justify-center bg-cream">
+      <div className="flex h-full items-center justify-center bg-cream">
         <p className="text-text-light">Loading...</p>
       </div>
     );
@@ -80,7 +80,7 @@ function LoginPage() {
   };
 
   return (
-    <div className="flex h-screen flex-col items-center justify-center bg-cream">
+    <div className="flex h-full flex-col items-center justify-center bg-cream">
       <h1 className="mb-2 font-heading text-4xl font-bold text-primary">
         Simple Dimple PAT
       </h1>
@@ -115,18 +115,22 @@ function PrototypeBanner() {
 export default function App() {
   return (
     <ErrorBoundary>
-      <PrototypeBanner />
-      <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <AuthGuard>
-            <Routes>
-              <Route path="/" element={<DashboardPage />} />
-              <Route path="/share" element={<SharePage />} />
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </AuthGuard>
-        </BrowserRouter>
-      </QueryClientProvider>
+      <div className="flex h-screen flex-col">
+        <PrototypeBanner />
+        <div className="flex-1 overflow-hidden">
+          <QueryClientProvider client={queryClient}>
+            <BrowserRouter>
+              <AuthGuard>
+                <Routes>
+                  <Route path="/" element={<DashboardPage />} />
+                  <Route path="/share" element={<SharePage />} />
+                  <Route path="*" element={<Navigate to="/" replace />} />
+                </Routes>
+              </AuthGuard>
+            </BrowserRouter>
+          </QueryClientProvider>
+        </div>
+      </div>
     </ErrorBoundary>
   );
 }
