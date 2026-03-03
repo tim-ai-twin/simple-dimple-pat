@@ -124,7 +124,7 @@ export default function ApiDetailView({
             </code>
             <button
               onClick={handleCopyUrl}
-              className="rounded-pill border border-border-light p-1.5 text-text-light transition-colors hover:border-primary hover:text-primary"
+              className="no-drop rounded-pill border border-border-light p-1.5 text-text-light transition-colors hover:border-primary hover:text-primary"
               aria-label="Copy base URL"
             >
               {copied ? (

@@ -106,7 +106,7 @@ function LoginPage() {
 
 function PrototypeBanner() {
   return (
-    <div className="bg-warning/90 px-4 py-2 text-center text-sm font-semibold text-white">
+    <div className="bg-primary px-4 py-2 text-center text-sm font-semibold text-text-on-primary">
       THIS IS A PROTOTYPE. DO NOT INPUT REAL API KEYS!
     </div>
   );
