@@ -6,6 +6,7 @@ import type { Session } from "@supabase/supabase-js";
 import ErrorBoundary from "./components/ui/ErrorBoundary";
 import DashboardPage from "./pages/DashboardPage";
 import SharePage from "./pages/SharePage";
+import { DEMO_USER_EMAIL, DEMO_USER_PASSWORD } from "./lib/demo";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -51,11 +52,25 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
 }
 
 function LoginPage() {
+  const [demoLoading, setDemoLoading] = useState(false);
+
   const handleLogin = async () => {
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: { redirectTo: window.location.origin },
     });
+  };
+
+  const handleDemoLogin = async () => {
+    setDemoLoading(true);
+    try {
+      await supabase.auth.signInWithPassword({
+        email: DEMO_USER_EMAIL,
+        password: DEMO_USER_PASSWORD,
+      });
+    } finally {
+      setDemoLoading(false);
+    }
   };
 
   return (
@@ -71,6 +86,13 @@ function LoginPage() {
         className="rounded-pill bg-primary px-8 py-3 font-semibold uppercase tracking-wider text-text-on-primary hover:bg-primary-light transition-colors"
       >
         Sign in with Google
+      </button>
+      <button
+        onClick={handleDemoLogin}
+        disabled={demoLoading}
+        className="mt-4 rounded-pill border border-primary px-8 py-3 font-semibold uppercase tracking-wider text-primary hover:bg-primary hover:text-text-on-primary transition-colors disabled:opacity-50"
+      >
+        {demoLoading ? "Signing in..." : "Demo Account"}
       </button>
     </div>
   );
