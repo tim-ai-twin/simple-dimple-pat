@@ -1,13 +1,13 @@
 export const colors = {
-  primary: "#8B3A2A",
-  primaryLight: "#A85340",
-  primaryDark: "#6B2A1E",
-  background: "#FAF3EB",
-  backgroundDark: "#F0E6D8",
-  text: "#3D2017",
+  primary: "#B84B30",
+  primaryLight: "#D06B52",
+  primaryDark: "#8B3A2A",
+  background: "#F8F4E9",
+  backgroundDark: "#EDE5D4",
+  text: "#2C1810",
   textLight: "#6B5144",
-  textOnPrimary: "#FAF3EB",
-  border: "#D4B8A0",
+  textOnPrimary: "#F8F4E9",
+  border: "#D4BAA0",
   borderLight: "#E8D5C4",
   success: "#2D7D46",
   warning: "#C17D10",
@@ -16,8 +16,8 @@ export const colors = {
 } as const;
 
 export const typography = {
-  fontHeading: "'Playfair Display', Georgia, serif",
-  fontBody: "'Inter', system-ui, -apple-system, sans-serif",
+  fontHeading: "'DM Serif Display', Georgia, serif",
+  fontBody: "'DM Sans', system-ui, -apple-system, sans-serif",
   sizes: {
     xs: "0.75rem",
     sm: "0.875rem",

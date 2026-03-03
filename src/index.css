@@ -1,23 +1,23 @@
-@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #8B3A2A;
-  --color-primary-light: #A85340;
-  --color-primary-dark: #6B2A1E;
-  --color-cream: #FAF3EB;
-  --color-cream-dark: #F0E6D8;
-  --color-text: #3D2017;
+  --color-primary: #B84B30;
+  --color-primary-light: #D06B52;
+  --color-primary-dark: #8B3A2A;
+  --color-cream: #F8F4E9;
+  --color-cream-dark: #EDE5D4;
+  --color-text: #2C1810;
   --color-text-light: #6B5144;
-  --color-text-on-primary: #FAF3EB;
-  --color-border: #D4B8A0;
+  --color-text-on-primary: #F8F4E9;
+  --color-border: #D4BAA0;
   --color-border-light: #E8D5C4;
   --color-success: #2D7D46;
   --color-warning: #C17D10;
   --color-error: #C53030;
   --color-disabled: #A0917E;
-  --font-heading: "Playfair Display", Georgia, serif;
-  --font-body: "Inter", system-ui, -apple-system, sans-serif;
+  --font-heading: "DM Serif Display", Georgia, serif;
+  --font-body: "DM Sans", system-ui, -apple-system, sans-serif;
   --radius-pill: 9999px;
 }
 
@@ -30,4 +30,36 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
+}
+
+/* Drop shadow for pill-shaped buttons */
+button[class~="rounded-pill"],
+a[class~="rounded-pill"] {
+  --_btn-shadow: var(--color-primary);
+  box-shadow: 2px 3px 0 0 var(--_btn-shadow);
+  transition: box-shadow 0.1s ease, transform 0.1s ease,
+    background-color 0.15s ease, color 0.15s ease,
+    border-color 0.15s ease, opacity 0.15s ease;
+}
+
+/* Secondary/cancel buttons match their border color */
+button[class~="rounded-pill"][class~="border-border"] {
+  --_btn-shadow: var(--color-border);
+}
+
+/* Press effect */
+button[class~="rounded-pill"]:active:not(:disabled),
+a[class~="rounded-pill"]:active {
+  box-shadow: 0 0 0 0 var(--_btn-shadow);
+  transform: translate(2px, 3px);
+}
+
+/* Opt out of drop shadow */
+button[class~="rounded-pill"][class~="no-drop"] {
+  box-shadow: none;
+}
+
+/* Disabled buttons */
+button[class~="rounded-pill"]:disabled {
+  box-shadow: 2px 3px 0 0 var(--color-disabled);
 }

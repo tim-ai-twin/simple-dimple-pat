@@ -169,11 +169,7 @@ export default function TokenDetailView({
           <button
             onClick={handleToggleStatus}
             disabled={toggleStatus.isPending}
-            className={`rounded-pill px-4 py-1.5 text-sm font-medium transition-colors ${
-              token.status === "active"
-                ? "border border-success/50 text-success hover:bg-success/10"
-                : "border border-error/50 text-error hover:bg-error/10"
-            } disabled:opacity-50`}
+            className="rounded-pill border border-primary px-4 py-1.5 text-sm font-medium text-primary transition-colors hover:bg-primary hover:text-text-on-primary disabled:opacity-50"
           >
             {token.status === "active" ? "Disable" : "Enable"}
           </button>
@@ -192,7 +188,7 @@ export default function TokenDetailView({
             <button
               onClick={handleExpireNow}
               disabled={updateExpiration.isPending}
-              className="rounded-pill border border-warning/50 px-4 py-1.5 text-sm font-medium text-warning transition-colors hover:bg-warning/10 disabled:opacity-50"
+              className="rounded-pill border border-primary px-4 py-1.5 text-sm font-medium text-primary transition-colors hover:bg-primary hover:text-text-on-primary disabled:opacity-50"
             >
               Expire Now
             </button>

@@ -197,7 +197,7 @@ export default function Sidebar({ onSelect, onAddApi, selectedId }: SidebarProps
               }
             }}
             disabled={resetDemo.isPending}
-            className="w-full rounded-pill border border-warning py-2 text-sm font-semibold uppercase tracking-wider text-warning hover:bg-warning hover:text-white transition-colors disabled:opacity-50"
+            className="w-full rounded-pill border border-primary py-2 text-sm font-semibold uppercase tracking-wider text-primary hover:bg-primary hover:text-text-on-primary transition-colors disabled:opacity-50"
           >
             {resetDemo.isPending ? "Resetting..." : "Reset Demo"}
           </button>

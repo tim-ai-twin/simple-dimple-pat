@@ -22,7 +22,7 @@ export default function Header() {
           Simple Dimple PAT
         </h1>
         {isDemo && (
-          <span className="rounded-full bg-blue-100 px-3 py-0.5 text-xs font-semibold text-blue-700">
+          <span className="rounded-full bg-primary/10 px-3 py-0.5 text-xs font-semibold text-primary-dark">
             Demo Mode — shared account
           </span>
         )}
