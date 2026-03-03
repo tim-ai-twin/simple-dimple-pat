@@ -1,7 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useApiList } from "../../hooks/useApis";
 import { useTokensForApi } from "../../hooks/useTokens";
+import { useResetDemo } from "../../hooks/useDemo";
 import { SidebarSkeleton } from "../ui/Skeleton";
+import { supabase } from "../../lib/supabase";
+import { isDemoUser } from "../../lib/demo";
 import type { ApiRegistration, AccessToken } from "../../../shared/types";
 
 interface SidebarProps {
@@ -91,6 +94,14 @@ function ApiTokenChildren({
 export default function Sidebar({ onSelect, onAddApi, selectedId }: SidebarProps) {
   const { data: apis, isLoading } = useApiList();
   const [expandedApis, setExpandedApis] = useState<Set<string>>(new Set());
+  const [isDemo, setIsDemo] = useState(false);
+  const resetDemo = useResetDemo();
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) setIsDemo(isDemoUser(session.user.id));
+    });
+  }, []);
 
   const toggleExpand = (apiId: string) => {
     setExpandedApis((prev) => {
@@ -171,13 +182,26 @@ export default function Sidebar({ onSelect, onAddApi, selectedId }: SidebarProps
         )}
       </div>
 
-      <div className="border-t border-border-light p-4">
+      <div className="border-t border-border-light p-4 space-y-2">
         <button
           onClick={onAddApi}
           className="w-full rounded-pill border border-primary py-2 text-sm font-semibold uppercase tracking-wider text-primary hover:bg-primary hover:text-text-on-primary transition-colors"
         >
           + Add API
         </button>
+        {isDemo && (
+          <button
+            onClick={() => {
+              if (window.confirm("Reset demo to original state? All current demo data will be replaced.")) {
+                resetDemo.mutate();
+              }
+            }}
+            disabled={resetDemo.isPending}
+            className="w-full rounded-pill border border-warning py-2 text-sm font-semibold uppercase tracking-wider text-warning hover:bg-warning hover:text-white transition-colors disabled:opacity-50"
+          >
+            {resetDemo.isPending ? "Resetting..." : "Reset Demo"}
+          </button>
+        )}
       </div>
     </aside>
   );

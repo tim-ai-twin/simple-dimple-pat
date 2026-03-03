@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { supabase } from "../lib/supabase";
 import Header from "../components/layout/Header";
 import Sidebar from "../components/layout/Sidebar";
 import DetailPanel from "../components/layout/DetailPanel";
@@ -20,6 +21,14 @@ type ViewState =
 export default function DashboardPage() {
   const [view, setView] = useState<ViewState>({ type: "welcome" });
   const queryClient = useQueryClient();
+
+  // Reset view when user identity changes (e.g. Google → demo switch)
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
+      setView({ type: "welcome" });
+    });
+    return () => subscription.unsubscribe();
+  }, []);
 
   const handleSelect = (type: string, id: string) => {
     if (type === "api") setView({ type: "api-detail", apiId: id });
@@ -100,7 +109,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="flex h-screen flex-col">
+    <div className="flex h-full flex-col">
       <Header />
       <div className="flex flex-1 overflow-hidden">
         <Sidebar
