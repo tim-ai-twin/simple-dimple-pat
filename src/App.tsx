@@ -30,7 +30,13 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
+      setSession((prev) => {
+        // Clear stale query cache when switching users
+        if (prev?.user?.id !== session?.user?.id) {
+          queryClient.clear();
+        }
+        return session;
+      });
     });
 
     return () => subscription.unsubscribe();
